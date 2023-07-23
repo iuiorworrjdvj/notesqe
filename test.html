@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link rel="stylesheet" href="note.css">
+<style>
+    /* Styles are unchanged */
+</style>
+<body>
+    <center>
+        <textarea name="newnote" id="note" cols="50" placeholder="Write your note here please!"></textarea>
+        <button id="Addnote" onclick="newfile()">Add</button>
+    </center>
+    <div id="Addhere"></div>
+
+    <script>
+        let note = document.getElementById('note');
+        let Add = document.getElementById("Addnote");
+        let make = document.getElementById("Addhere");
+
+        // Load notes from localStorage when the page loads
+        window.addEventListener('load', loadNotesFromLocalStorage);
+
+        function newfile() {
+            if (note.value === '') {
+                alert("Please provide me with an input");
+            } else {
+                let myfile = document.createElement('div');
+                myfile.textContent = document.getElementById('note').value;
+                myfile.className = 'boss';
+                let remove = document.createElement('button');
+                remove.textContent = 'Delete';
+                remove.className = 'remove';
+                remove.addEventListener('click', dell);
+                make.appendChild(myfile);
+                myfile.appendChild(remove);
+                note.value = '';
+
+                // Save the notes to localStorage
+                saveNotesToLocalStorage();
+            }
+        }
+
+        function dell(event) {
+            let newremove = event.target.parentNode;
+            newremove.remove();
+
+            // Save the updated notes to localStorage after removing a note
+            saveNotesToLocalStorage();
+        }
+
+        function saveNotesToLocalStorage() {
+            const notes = document.querySelectorAll('.boss');
+            const notesArray = Array.from(notes).map(note => note.textContent);
+            localStorage.setItem('notes', JSON.stringify(notesArray));
+        }
+
+        function loadNotesFromLocalStorage() {
+            const notesArray = JSON.parse(localStorage.getItem('notes')) || [];
+            notesArray.forEach(noteText => {
+                let myfile = document.createElement('div');
+                myfile.textContent = noteText;
+                myfile.className = 'boss';
+                let remove = document.createElement('button');
+                remove.textContent = 'Delete';
+                remove.className = 'remove';
+                remove.addEventListener('click', dell);
+                make.appendChild(myfile);
+                myfile.appendChild(remove);
+            });
+        }
+    </script>
+</body>
+</html>
